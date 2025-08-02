@@ -8,4 +8,4 @@
   status = 200
 
 [build.environment]
-  NETLIFY = "true"
+  NODE_VERSION = "18"
