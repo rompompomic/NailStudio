@@ -32,6 +32,10 @@ yarn-error.log*
 *.sln
 *.sw?
 *.tar.gz
+.local/
+.replit
+replit.md
+.config/
 
 # Project specific
 data/*.json
