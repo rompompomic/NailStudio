@@ -11,6 +11,7 @@
     "predeploy": "npm run build",
     "build:netlify": "cross-env NETLIFY=true vite build",
     "build:github": "vite build",
+    "predeploy": "npm run build:github",
     "deploy": "gh-pages -d dist"
   },
   "homepage": "https://rompompomic.github.io/NailStudio",
