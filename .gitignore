@@ -37,10 +37,6 @@ yarn-error.log*
 replit.md
 .config/
 
-# Project specific
-data/*.json
-!data/example.json
-
 # Uploads - игнорировать все файлы в uploads кроме указанных
 uploads/*
 !uploads/7fe83ff9bbbc4c304cd7d9edf2f83091
