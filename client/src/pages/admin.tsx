@@ -37,37 +37,37 @@ export default function Admin() {
     },
   });
 
-  const { data: settings } = useQuery({
+  const { data: settings } = useQuery<any>({
     queryKey: ["/api/admin/settings"],
     enabled: isLoggedIn,
     meta: { headers: { Authorization: `Bearer ${token}` } },
   });
 
-  const { data: blocks = [] } = useQuery({
+  const { data: blocks = [] } = useQuery<any[]>({
     queryKey: ["/api/admin/blocks"],
     enabled: isLoggedIn,
     meta: { headers: { Authorization: `Bearer ${token}` } },
   });
 
-  const { data: services = [] } = useQuery({
+  const { data: services = [] } = useQuery<any[]>({
     queryKey: ["/api/admin/services"],
     enabled: isLoggedIn,
     meta: { headers: { Authorization: `Bearer ${token}` } },
   });
 
-  const { data: reviews = [] } = useQuery({
+  const { data: reviews = [] } = useQuery<any[]>({
     queryKey: ["/api/admin/reviews"],
     enabled: isLoggedIn,
     meta: { headers: { Authorization: `Bearer ${token}` } },
   });
 
-  const { data: requests = [] } = useQuery({
+  const { data: requests = [] } = useQuery<any[]>({
     queryKey: ["/api/admin/requests"],
     enabled: isLoggedIn,
     meta: { headers: { Authorization: `Bearer ${token}` } },
   });
 
-  const { data: images = [] } = useQuery({
+  const { data: images = [] } = useQuery<any[]>({
     queryKey: ["/api/admin/images"],
     enabled: isLoggedIn,
     meta: { headers: { Authorization: `Bearer ${token}` } },
@@ -140,6 +140,37 @@ export default function Admin() {
       toast({ title: "Успешно", description: "Изображение удалено" });
     },
   });
+
+  const createServiceMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await apiRequest("POST", "/api/admin/services", data, {
+        Authorization: `Bearer ${token}`,
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/services"] });
+      setNewService({ name: "", description: "", price: "" });
+      toast({ title: "Успешно", description: "Услуга добавлена" });
+    },
+  });
+
+  const createReviewMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await apiRequest("POST", "/api/admin/reviews", data, {
+        Authorization: `Bearer ${token}`,
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/reviews"] });
+      setNewReview({ name: "", text: "" });
+      toast({ title: "Успешно", description: "Отзыв добавлен" });
+    },
+  });
+
+  const [newService, setNewService] = useState({ name: "", description: "", price: "" });
+  const [newReview, setNewReview] = useState({ name: "", text: "" });
 
   if (!isLoggedIn) {
     return (
@@ -369,55 +400,61 @@ export default function Admin() {
           </TabsContent>
 
           <TabsContent value="services">
-            <Card>
-              <CardHeader>
-                <CardTitle>Управление услугами</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-4">
-                  {services.map((service) => (
-                    <div key={service.id} className="flex items-center justify-between p-4 border rounded-lg">
-                      <div>
-                        <h4 className="font-medium">{service.name}</h4>
-                        <p className="text-sm text-muted-foreground">{service.description}</p>
-                        <p className="text-sm font-medium">{service.price}</p>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button variant="outline" size="sm" disabled>
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => deleteServiceMutation.mutate(service.id)}
-                          disabled={deleteServiceMutation.isPending}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Добавить услугу</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="serviceName">Название услуги</Label>
+                    <Input
+                      id="serviceName"
+                      value={newService.name}
+                      onChange={(e) => setNewService({ ...newService, name: e.target.value })}
+                      placeholder="Например: Классический маникюр"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="serviceDescription">Описание</Label>
+                    <Textarea
+                      id="serviceDescription"
+                      value={newService.description}
+                      onChange={(e) => setNewService({ ...newService, description: e.target.value })}
+                      placeholder="Краткое описание услуги"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="servicePrice">Цена</Label>
+                    <Input
+                      id="servicePrice"
+                      value={newService.price}
+                      onChange={(e) => setNewService({ ...newService, price: e.target.value })}
+                      placeholder="Например: 2000 ₽"
+                    />
+                  </div>
+                  <Button 
+                    onClick={() => createServiceMutation.mutate(newService)}
+                    disabled={createServiceMutation.isPending || !newService.name || !newService.price}
+                    className="w-full"
+                  >
+                    Добавить услугу
+                  </Button>
+                </CardContent>
+              </Card>
 
-          <TabsContent value="reviews">
-            <Card>
-              <CardHeader>
-                <CardTitle>Управление отзывами</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-4">
-                  {reviews.map((review) => (
-                    <div key={review.id} className="p-4 border rounded-lg">
-                      <div className="flex items-start justify-between">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Управление услугами</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid gap-4">
+                    {services.map((service) => (
+                      <div key={service.id} className="flex items-center justify-between p-4 border rounded-lg">
                         <div>
-                          <h4 className="font-medium">{review.name}</h4>
-                          <p className="text-sm text-muted-foreground mt-1">{review.text}</p>
-                          <p className="text-xs text-muted-foreground mt-2">
-                            {new Date(review.createdAt!).toLocaleString('ru-RU')}
-                          </p>
+                          <h4 className="font-medium">{service.name}</h4>
+                          <p className="text-sm text-muted-foreground">{service.description}</p>
+                          <p className="text-sm font-medium">{service.price}</p>
                         </div>
                         <div className="flex gap-2">
                           <Button variant="outline" size="sm" disabled>
@@ -426,19 +463,98 @@ export default function Admin() {
                           <Button 
                             variant="outline" 
                             size="sm"
-                            onClick={() => deleteReviewMutation.mutate(review.id)}
-                            disabled={deleteReviewMutation.isPending}
+                            onClick={() => deleteServiceMutation.mutate(service.id)}
+                            disabled={deleteServiceMutation.isPending}
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>
-
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                    ))}
+                    {services.length === 0 && (
+                      <p className="text-center text-muted-foreground py-8">Пока нет услуг</p>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="reviews">
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Добавить отзыв</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="reviewName">Имя клиента</Label>
+                    <Input
+                      id="reviewName"
+                      value={newReview.name}
+                      onChange={(e) => setNewReview({ ...newReview, name: e.target.value })}
+                      placeholder="Например: Анна С."
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="reviewText">Текст отзыва</Label>
+                    <Textarea
+                      id="reviewText"
+                      value={newReview.text}
+                      onChange={(e) => setNewReview({ ...newReview, text: e.target.value })}
+                      placeholder="Отзыв клиента о работе"
+                      rows={3}
+                    />
+                  </div>
+                  <Button 
+                    onClick={() => createReviewMutation.mutate(newReview)}
+                    disabled={createReviewMutation.isPending || !newReview.name || !newReview.text}
+                    className="w-full"
+                  >
+                    Добавить отзыв
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Управление отзывами</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid gap-4">
+                    {reviews.map((review) => (
+                      <div key={review.id} className="p-4 border rounded-lg">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <h4 className="font-medium">{review.name}</h4>
+                            <p className="text-sm text-muted-foreground mt-1">{review.text}</p>
+                            <p className="text-xs text-muted-foreground mt-2">
+                              {new Date(review.createdAt!).toLocaleString('ru-RU')}
+                            </p>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button variant="outline" size="sm" disabled>
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => deleteReviewMutation.mutate(review.id)}
+                              disabled={deleteReviewMutation.isPending}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    {reviews.length === 0 && (
+                      <p className="text-center text-muted-foreground py-8">Пока нет отзывов</p>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           <TabsContent value="requests">
