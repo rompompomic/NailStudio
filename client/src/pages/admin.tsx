@@ -102,6 +102,45 @@ export default function Admin() {
     },
   });
 
+  const deleteServiceMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const response = await apiRequest("DELETE", `/api/admin/services/${id}`, null, {
+        Authorization: `Bearer ${token}`,
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/services"] });
+      toast({ title: "Успешно", description: "Услуга удалена" });
+    },
+  });
+
+  const deleteReviewMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const response = await apiRequest("DELETE", `/api/admin/reviews/${id}`, null, {
+        Authorization: `Bearer ${token}`,
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/reviews"] });
+      toast({ title: "Успешно", description: "Отзыв удален" });
+    },
+  });
+
+  const deleteImageMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const response = await apiRequest("DELETE", `/api/admin/images/${id}`, null, {
+        Authorization: `Bearer ${token}`,
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/images"] });
+      toast({ title: "Успешно", description: "Изображение удалено" });
+    },
+  });
+
   if (!isLoggedIn) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 flex items-center justify-center">
@@ -343,9 +382,19 @@ export default function Admin() {
                         <p className="text-sm text-muted-foreground">{service.description}</p>
                         <p className="text-sm font-medium">{service.price}</p>
                       </div>
-                      <Button variant="outline" size="sm">
-                        <Edit className="w-4 h-4" />
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm" disabled>
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => deleteServiceMutation.mutate(service.id)}
+                          disabled={deleteServiceMutation.isPending}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -371,12 +420,18 @@ export default function Admin() {
                           </p>
                         </div>
                         <div className="flex gap-2">
-                          <Button variant="outline" size="sm">
+                          <Button variant="outline" size="sm" disabled>
                             <Edit className="w-4 h-4" />
                           </Button>
-                          <Button variant="outline" size="sm">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => deleteReviewMutation.mutate(review.id)}
+                            disabled={deleteReviewMutation.isPending}
+                          >
                             <Trash2 className="w-4 h-4" />
                           </Button>
+
                         </div>
                       </div>
                     </div>
@@ -463,9 +518,8 @@ export default function Admin() {
                         <Button
                           variant="destructive"
                           size="sm"
-                          onClick={() => {
-                            // Delete image mutation would go here
-                          }}
+                          onClick={() => deleteImageMutation.mutate(image.id)}
+                          disabled={deleteImageMutation.isPending}
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
