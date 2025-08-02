@@ -4,12 +4,9 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
-    "dev:server": "cross-env NODE_ENV=development tsx server/index.ts",
-    "dev:client": "vite",
+    "dev": "cross-env NODE_ENV=development tsx server/index.ts",
     "build": "vite build",
-    "preview": "vite preview",
-    "start": "node server/index.js",
+    "start": "cross-env NODE_ENV=production node dist/index.js",
     "check": "tsc",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
@@ -98,7 +95,6 @@
     "@types/ws": "^8.5.13",
     "@vitejs/plugin-react": "^4.3.2",
     "autoprefixer": "^10.4.20",
-    "concurrently": "^9.2.0",
     "cross-env": "^10.0.0",
     "esbuild": "^0.25.0",
     "gh-pages": "^6.3.0",
