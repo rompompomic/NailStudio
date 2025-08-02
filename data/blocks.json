@@ -1,0 +1,57 @@
+[
+  {
+    "id": "about-block-1",
+    "blockType": "about",
+    "enabled": true,
+    "title": "Обо мне",
+    "content": "Меня зовут Анна, и я занимаюсь nail-индустрией уже более 5 лет. Моя страсть — создавать красивые и здоровые ногти, которые подчеркивают индивидуальность каждой клиентки.",
+    "image": "",
+    "images": null,
+    "stats": "[{\"label\":\"8+\",\"value\":\"лет опыта\"},{\"label\":\"500+\",\"value\":\"довольных клиентов\"}]",
+    "order": 0
+  },
+  {
+    "id": "services-block-1",
+    "blockType": "services",
+    "enabled": true,
+    "title": "Мои услуги",
+    "content": "Профессиональный уход за ногтями с использованием качественных материалов",
+    "image": null,
+    "images": null,
+    "stats": null,
+    "order": 1
+  },
+  {
+    "id": "reviews-block-1",
+    "blockType": "reviews",
+    "enabled": true,
+    "title": "Отзывы клиентов",
+    "content": "Что говорят о моей работе довольные клиентки",
+    "image": null,
+    "images": null,
+    "stats": null,
+    "order": 2
+  },
+  {
+    "id": "contacts-block-1",
+    "blockType": "contacts",
+    "enabled": true,
+    "title": "Контакты",
+    "content": "Свяжитесь со мной для записи на маникюр",
+    "image": "",
+    "images": null,
+    "stats": null,
+    "order": 3
+  },
+  {
+    "blockType": "custom",
+    "enabled": true,
+    "title": "Сертификаты",
+    "content": "",
+    "order": 3,
+    "id": "f814ced6-df9c-44e6-92fe-995c2225986f",
+    "image": "",
+    "images": "[{\"path\":\"/uploads/f1991b583e2e61f03903b030e9a546f3\",\"width\":\"100%\",\"height\":\"350px\"},{\"path\":\"/uploads/6b455e3730e16aad821bf5720340f939\",\"width\":\"100%\",\"height\":\"250px\"},{\"path\":\"/uploads/47b1dde1b6ded13a4f0452a976b65e8d\",\"width\":\"100%\",\"height\":\"390px\"},{\"path\":\"/uploads/020c6c4cf190ea68cfbea1e64bda5c46\",\"width\":\"100%\",\"height\":\"250px\"}]",
+    "stats": null
+  }
+]

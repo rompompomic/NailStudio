@@ -1,0 +1,23 @@
+{
+  "id": "ff1a01db-b398-4a46-8766-333231f93301",
+  "masterName": "Анна Петрова",
+  "masterPhone": "+7 (950) 123-45-67",
+  "masterSignature": "Мастер маникюра и nail-дизайна",
+  "masterDescription": "Создаю красивые и здоровые ногти уже более 8 лет. Индивидуальный подход к каждому клиенту.",
+  "masterPhoto": "",
+  "experienceYears": "8+",
+  "experienceText": "лет опыта",
+  "satisfiedClients": "500+",
+  "clientsText": "довольных клиентов",
+  "telegramEnabled": false,
+  "telegramUsername": null,
+  "whatsappEnabled": false,
+  "whatsappPhone": null,
+  "instagramEnabled": false,
+  "instagramUsername": null,
+  "botToken": "8110196785:AAHDP9KEUieadWNYSa7BW6S_PB92y1ZFLfo",
+  "copyright": "© 2025 Все права защищены",
+  "adminPassword": "$2b$10$WoVz5W6geOBpyU6RYwC5JeOZAIZqXje4chEkwVJHV1ZW1cXpkyElO",
+  "workTimeStart": "08:00",
+  "workTimeEnd": "23:00"
+}
