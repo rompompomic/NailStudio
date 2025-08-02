@@ -2,7 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MessageCircle, Phone, Instagram } from "lucide-react";
+import { Phone } from "lucide-react";
+import { FaTelegramPlane, FaWhatsapp, FaInstagram } from "react-icons/fa";
 import BookingForm from "@/components/booking-form";
 import { useState } from "react";
 
@@ -109,7 +110,7 @@ export default function Home() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <MessageCircle className="w-6 h-6" />
+                    <FaTelegramPlane className="w-6 h-6" />
                   </a>
                 )}
                 {settings.whatsappEnabled && settings.whatsappPhone && (
@@ -119,7 +120,7 @@ export default function Home() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <Phone className="w-6 h-6" />
+                    <FaWhatsapp className="w-6 h-6" />
                   </a>
                 )}
                 {settings.instagramEnabled && settings.instagramUsername && (
@@ -129,7 +130,7 @@ export default function Home() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <Instagram className="w-6 h-6" />
+                    <FaInstagram className="w-6 h-6" />
                   </a>
                 )}
               </div>
@@ -300,7 +301,7 @@ export default function Home() {
                     {settings.telegramEnabled && settings.telegramUsername && (
                       <div className="flex items-center space-x-4">
                         <div className="w-12 h-12 bg-gradient-pastel rounded-xl flex items-center justify-center">
-                          <MessageCircle className="w-6 h-6 text-blue-500" />
+                          <FaTelegramPlane className="w-6 h-6 text-blue-500" />
                         </div>
                         <div>
                           <div className="font-medium text-foreground">Telegram</div>
@@ -312,7 +313,7 @@ export default function Home() {
                     {settings.whatsappEnabled && settings.whatsappPhone && (
                       <div className="flex items-center space-x-4">
                         <div className="w-12 h-12 bg-gradient-pastel rounded-xl flex items-center justify-center">
-                          <Phone className="w-6 h-6 text-green-500" />
+                          <FaWhatsapp className="w-6 h-6 text-green-500" />
                         </div>
                         <div>
                           <div className="font-medium text-foreground">WhatsApp</div>
@@ -324,7 +325,7 @@ export default function Home() {
                     {settings.instagramEnabled && settings.instagramUsername && (
                       <div className="flex items-center space-x-4">
                         <div className="w-12 h-12 bg-gradient-pastel rounded-xl flex items-center justify-center">
-                          <Instagram className="w-6 h-6 text-pink-500" />
+                          <FaInstagram className="w-6 h-6 text-pink-500" />
                         </div>
                         <div>
                           <div className="font-medium text-foreground">Instagram</div>

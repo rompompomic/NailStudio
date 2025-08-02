@@ -181,7 +181,7 @@ export default function Admin() {
           </TabsList>
 
           <TabsContent value="settings">
-            {settings && (
+            {settings ? (
               <Card>
                 <CardHeader>
                   <CardTitle>Основные настройки</CardTitle>
@@ -192,7 +192,7 @@ export default function Admin() {
                       <Label htmlFor="masterName">Имя мастера</Label>
                       <Input
                         id="masterName"
-                        defaultValue={settings.masterName}
+                        defaultValue={settings.masterName || ""}
                         onBlur={(e) => updateSettingsMutation.mutate({ masterName: e.target.value })}
                       />
                     </div>
@@ -200,7 +200,7 @@ export default function Admin() {
                       <Label htmlFor="masterPhone">Телефон</Label>
                       <Input
                         id="masterPhone"
-                        defaultValue={settings.masterPhone}
+                        defaultValue={settings.masterPhone || ""}
                         onBlur={(e) => updateSettingsMutation.mutate({ masterPhone: e.target.value })}
                       />
                     </div>
@@ -210,7 +210,7 @@ export default function Admin() {
                     <Label htmlFor="masterSignature">Подпись</Label>
                     <Input
                       id="masterSignature"
-                      defaultValue={settings.masterSignature}
+                      defaultValue={settings.masterSignature || ""}
                       onBlur={(e) => updateSettingsMutation.mutate({ masterSignature: e.target.value })}
                     />
                   </div>
@@ -219,7 +219,7 @@ export default function Admin() {
                     <Label htmlFor="masterDescription">Описание</Label>
                     <Textarea
                       id="masterDescription"
-                      defaultValue={settings.masterDescription}
+                      defaultValue={settings.masterDescription || ""}
                       onBlur={(e) => updateSettingsMutation.mutate({ masterDescription: e.target.value })}
                     />
                   </div>
@@ -239,7 +239,7 @@ export default function Admin() {
                         />
                       </div>
                       <Switch
-                        checked={settings.telegramEnabled}
+                        checked={settings.telegramEnabled || false}
                         onCheckedChange={(checked) => updateSettingsMutation.mutate({ telegramEnabled: checked })}
                       />
                     </div>
@@ -254,7 +254,7 @@ export default function Admin() {
                         />
                       </div>
                       <Switch
-                        checked={settings.whatsappEnabled}
+                        checked={settings.whatsappEnabled || false}
                         onCheckedChange={(checked) => updateSettingsMutation.mutate({ whatsappEnabled: checked })}
                       />
                     </div>
@@ -269,7 +269,7 @@ export default function Admin() {
                         />
                       </div>
                       <Switch
-                        checked={settings.instagramEnabled}
+                        checked={settings.instagramEnabled || false}
                         onCheckedChange={(checked) => updateSettingsMutation.mutate({ instagramEnabled: checked })}
                       />
                     </div>
@@ -284,9 +284,13 @@ export default function Admin() {
                       <Input
                         id="botToken"
                         type="password"
+                        placeholder="Токен от @BotFather"
                         defaultValue={settings.botToken || ""}
                         onBlur={(e) => updateSettingsMutation.mutate({ botToken: e.target.value })}
                       />
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Для получения токена напишите @BotFather в Telegram и создайте нового бота
+                      </p>
                     </div>
                   </div>
 
@@ -300,9 +304,16 @@ export default function Admin() {
                       placeholder="Оставьте пустым, чтобы не менять"
                       onBlur={(e) => e.target.value && updateSettingsMutation.mutate({ adminPassword: e.target.value })}
                     />
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Текущий пароль: admin123
+                    </p>
                   </div>
                 </CardContent>
               </Card>
+            ) : (
+              <div className="flex items-center justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              </div>
             )}
           </TabsContent>
 
