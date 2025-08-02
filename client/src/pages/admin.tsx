@@ -14,6 +14,9 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { LogOut, Upload, Trash2, Edit, Plus, User, Settings, MessageSquare, FileImage, Phone } from "lucide-react";
 import AdminBlockEditor from "@/components/admin-block-editor";
+import AdminBlockCreator from "@/components/admin-block-creator";
+import AdminServiceEditor from "@/components/admin-service-editor";
+import AdminReviewEditor from "@/components/admin-review-editor";
 
 export default function Admin() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -69,6 +72,12 @@ export default function Admin() {
 
   const { data: images = [] } = useQuery<any[]>({
     queryKey: ["/api/admin/images"],
+    enabled: isLoggedIn,
+    meta: { headers: { Authorization: `Bearer ${token}` } },
+  });
+
+  const { data: subscribers = [] } = useQuery<any[]>({
+    queryKey: ["/api/admin/subscribers"],
     enabled: isLoggedIn,
     meta: { headers: { Authorization: `Bearer ${token}` } },
   });
@@ -141,6 +150,57 @@ export default function Admin() {
     },
   });
 
+  const deleteSubscriberMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const response = await apiRequest("DELETE", `/api/admin/subscribers/${id}`, null, {
+        Authorization: `Bearer ${token}`,
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/subscribers"] });
+      toast({ title: "Успешно", description: "Подписчик удален" });
+    },
+  });
+
+  const createSubscriberMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await apiRequest("POST", "/api/admin/subscribers", data, {
+        Authorization: `Bearer ${token}`,
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/subscribers"] });
+      toast({ title: "Успешно", description: "Подписчик добавлен" });
+    },
+    onError: () => {
+      toast({ title: "Ошибка", description: "Не удалось добавить подписчика", variant: "destructive" });
+    },
+  });
+
+  const testTelegramMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest("POST", "/api/admin/telegram/test", null, {
+        Authorization: `Bearer ${token}`,
+      });
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({ 
+        title: "Тест отправлен", 
+        description: data.message 
+      });
+    },
+    onError: () => {
+      toast({ 
+        title: "Ошибка", 
+        description: "Не удалось отправить тестовое сообщение", 
+        variant: "destructive" 
+      });
+    },
+  });
+
   const createServiceMutation = useMutation({
     mutationFn: async (data: any) => {
       const response = await apiRequest("POST", "/api/admin/services", data, {
@@ -171,6 +231,12 @@ export default function Admin() {
 
   const [newService, setNewService] = useState({ name: "", description: "", price: "" });
   const [newReview, setNewReview] = useState({ name: "", text: "" });
+  const [newSubscriber, setNewSubscriber] = useState({
+    chatId: "",
+    firstName: "",
+    lastName: "",
+    username: "",
+  });
 
   if (!isLoggedIn) {
     return (
@@ -223,7 +289,7 @@ export default function Admin() {
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         <Tabs defaultValue="settings" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="settings" className="gap-2">
               <Settings className="w-4 h-4" />
               Настройки
@@ -243,6 +309,10 @@ export default function Admin() {
             <TabsTrigger value="requests" className="gap-2">
               <Phone className="w-4 h-4" />
               Заявки
+            </TabsTrigger>
+            <TabsTrigger value="subscribers" className="gap-2">
+              <User className="w-4 h-4" />
+              Подписчики
             </TabsTrigger>
             <TabsTrigger value="images" className="gap-2">
               <FileImage className="w-4 h-4" />
@@ -292,6 +362,121 @@ export default function Admin() {
                       defaultValue={settings.masterDescription || ""}
                       onBlur={(e) => updateSettingsMutation.mutate({ masterDescription: e.target.value })}
                     />
+                  </div>
+
+                  <div>
+                    <Label>Фотография мастера</Label>
+                    <div className="flex items-center gap-4">
+                      <div>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              const formData = new FormData();
+                              formData.append('image', file);
+                              uploadImageMutation.mutate(formData, {
+                                onSuccess: (result) => {
+                                  updateSettingsMutation.mutate({ masterPhoto: result.path });
+                                }
+                              });
+                            }
+                          }}
+                          className="hidden"
+                          id="masterPhotoUpload"
+                        />
+                        <label htmlFor="masterPhotoUpload">
+                          <Button asChild variant="outline" className="gap-2">
+                            <span>
+                              <Upload className="w-4 h-4" />
+                              Загрузить фото
+                            </span>
+                          </Button>
+                        </label>
+                      </div>
+                      {settings.masterPhoto && (
+                        <img
+                          src={settings.masterPhoto}
+                          alt="Master photo"
+                          className="w-20 h-20 object-cover rounded-lg"
+                        />
+                      )}
+                    </div>
+                    <Input
+                      value={settings.masterPhoto || ""}
+                      onChange={(e) => updateSettingsMutation.mutate({ masterPhoto: e.target.value })}
+                      placeholder="URL фотографии"
+                      className="mt-2"
+                    />
+                  </div>
+
+                  <Separator />
+
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-medium">Время работы</h3>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div>
+                        <Label htmlFor="workTimeStart">Начало работы</Label>
+                        <Input
+                          id="workTimeStart"
+                          type="time"
+                          defaultValue={settings.workTimeStart || "09:00"}
+                          onBlur={(e) => updateSettingsMutation.mutate({ workTimeStart: e.target.value })}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="workTimeEnd">Окончание работы</Label>
+                        <Input
+                          id="workTimeEnd"
+                          type="time"
+                          defaultValue={settings.workTimeEnd || "21:00"}
+                          onBlur={(e) => updateSettingsMutation.mutate({ workTimeEnd: e.target.value })}
+                        />
+                      </div>
+                    </div>
+                    <Separator />
+                    <h3 className="text-lg font-medium">Статистика</h3>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div>
+                        <Label htmlFor="experienceYears">Годы опыта</Label>
+                        <Input
+                          id="experienceYears"
+                          defaultValue={settings.experienceYears || ""}
+                          onBlur={(e) => updateSettingsMutation.mutate({ experienceYears: e.target.value })}
+                          placeholder="5+"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="experienceText">Текст опыта</Label>
+                        <Input
+                          id="experienceText"
+                          defaultValue={settings.experienceText || ""}
+                          onBlur={(e) => updateSettingsMutation.mutate({ experienceText: e.target.value })}
+                          placeholder="лет опыта"
+                        />
+                      </div>
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div>
+                        <Label htmlFor="satisfiedClients">Количество клиентов</Label>
+                        <Input
+                          id="satisfiedClients"
+                          defaultValue={settings.satisfiedClients || ""}
+                          onBlur={(e) => updateSettingsMutation.mutate({ satisfiedClients: e.target.value })}
+                          placeholder="500+"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="clientsText">Текст клиентов</Label>
+                        <Input
+                          id="clientsText"
+                          defaultValue={settings.clientsText || ""}
+                          onBlur={(e) => updateSettingsMutation.mutate({ clientsText: e.target.value })}
+                          placeholder="довольных клиентов"
+                        />
+                      </div>
+                    </div>
                   </div>
 
                   <Separator />
@@ -362,6 +547,32 @@ export default function Admin() {
                         Для получения токена напишите @BotFather в Telegram и создайте нового бота
                       </p>
                     </div>
+                    {settings.botToken && (
+                      <div>
+                        <Button
+                          onClick={() => testTelegramMutation.mutate()}
+                          disabled={testTelegramMutation.isPending}
+                          className="w-full"
+                        >
+                          {testTelegramMutation.isPending ? "Отправка..." : "Отправить тест"}
+                        </Button>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Отправить тестовое уведомление всем подписчикам
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  <Separator />
+
+                  <div>
+                    <Label htmlFor="copyright">Копирайт</Label>
+                    <Input
+                      id="copyright"
+                      defaultValue={settings.copyright || ""}
+                      onBlur={(e) => updateSettingsMutation.mutate({ copyright: e.target.value })}
+                      placeholder="© 2024 Все права защищены"
+                    />
                   </div>
 
                   <Separator />
@@ -389,13 +600,17 @@ export default function Admin() {
 
           <TabsContent value="blocks">
             <div className="grid gap-6">
-              {blocks.map((block) => (
-                <AdminBlockEditor 
-                  key={block.id} 
-                  block={block} 
-                  token={token}
-                />
-              ))}
+              <AdminBlockCreator token={token} />
+              
+              <div className="space-y-6">
+                {blocks.map((block) => (
+                  <AdminBlockEditor 
+                    key={block.id} 
+                    block={block} 
+                    token={token}
+                  />
+                ))}
+              </div>
             </div>
           </TabsContent>
 
@@ -425,16 +640,29 @@ export default function Admin() {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="servicePrice">Цена</Label>
+                    <Label htmlFor="servicePrice">Цена (₽)</Label>
                     <Input
                       id="servicePrice"
+                      type="number"
                       value={newService.price}
                       onChange={(e) => setNewService({ ...newService, price: e.target.value })}
-                      placeholder="Например: 2000 ₽"
+                      placeholder="2000"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="serviceIcon">Эмодзи</Label>
+                    <Input
+                      id="serviceIcon"
+                      value={newService.icon}
+                      onChange={(e) => setNewService({ ...newService, icon: e.target.value })}
+                      placeholder="💅"
                     />
                   </div>
                   <Button 
-                    onClick={() => createServiceMutation.mutate(newService)}
+                    onClick={() => createServiceMutation.mutate({
+                      ...newService,
+                      price: newService.price + " ₽" // Добавляем ₽ автоматически
+                    })}
                     disabled={createServiceMutation.isPending || !newService.name || !newService.price}
                     className="w-full"
                   >
@@ -443,40 +671,18 @@ export default function Admin() {
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Управление услугами</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid gap-4">
-                    {services.map((service) => (
-                      <div key={service.id} className="flex items-center justify-between p-4 border rounded-lg">
-                        <div>
-                          <h4 className="font-medium">{service.name}</h4>
-                          <p className="text-sm text-muted-foreground">{service.description}</p>
-                          <p className="text-sm font-medium">{service.price}</p>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button variant="outline" size="sm" disabled>
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => deleteServiceMutation.mutate(service.id)}
-                            disabled={deleteServiceMutation.isPending}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                    {services.length === 0 && (
-                      <p className="text-center text-muted-foreground py-8">Пока нет услуг</p>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+              <div className="space-y-4">
+                {services.map((service) => (
+                  <AdminServiceEditor 
+                    key={service.id} 
+                    service={service} 
+                    token={token}
+                  />
+                ))}
+                {services.length === 0 && (
+                  <p className="text-center text-muted-foreground py-8">Пока нет услуг</p>
+                )}
+              </div>
             </div>
           </TabsContent>
 
@@ -516,44 +722,18 @@ export default function Admin() {
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Управление отзывами</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid gap-4">
-                    {reviews.map((review) => (
-                      <div key={review.id} className="p-4 border rounded-lg">
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <h4 className="font-medium">{review.name}</h4>
-                            <p className="text-sm text-muted-foreground mt-1">{review.text}</p>
-                            <p className="text-xs text-muted-foreground mt-2">
-                              {new Date(review.createdAt!).toLocaleString('ru-RU')}
-                            </p>
-                          </div>
-                          <div className="flex gap-2">
-                            <Button variant="outline" size="sm" disabled>
-                              <Edit className="w-4 h-4" />
-                            </Button>
-                            <Button 
-                              variant="outline" 
-                              size="sm"
-                              onClick={() => deleteReviewMutation.mutate(review.id)}
-                              disabled={deleteReviewMutation.isPending}
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                    {reviews.length === 0 && (
-                      <p className="text-center text-muted-foreground py-8">Пока нет отзывов</p>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+              <div className="space-y-4">
+                {reviews.map((review) => (
+                  <AdminReviewEditor 
+                    key={review.id} 
+                    review={review} 
+                    token={token}
+                  />
+                ))}
+                {reviews.length === 0 && (
+                  <p className="text-center text-muted-foreground py-8">Пока нет отзывов</p>
+                )}
+              </div>
             </div>
           </TabsContent>
 
@@ -588,6 +768,120 @@ export default function Admin() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="subscribers">
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Добавить подписчика</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="chatId">Chat ID *</Label>
+                      <Input
+                        id="chatId"
+                        value={newSubscriber.chatId}
+                        onChange={(e) => setNewSubscriber({ ...newSubscriber, chatId: e.target.value })}
+                        placeholder="123456789"
+                      />
+                      <p className="text-sm text-muted-foreground mt-1">
+                        ID чата пользователя в Telegram
+                      </p>
+                    </div>
+                    <div>
+                      <Label htmlFor="username">Username</Label>
+                      <Input
+                        id="username"
+                        value={newSubscriber.username}
+                        onChange={(e) => setNewSubscriber({ ...newSubscriber, username: e.target.value })}
+                        placeholder="@username"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="firstName">Имя</Label>
+                      <Input
+                        id="firstName"
+                        value={newSubscriber.firstName}
+                        onChange={(e) => setNewSubscriber({ ...newSubscriber, firstName: e.target.value })}
+                        placeholder="Имя"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="lastName">Фамилия</Label>
+                      <Input
+                        id="lastName"
+                        value={newSubscriber.lastName}
+                        onChange={(e) => setNewSubscriber({ ...newSubscriber, lastName: e.target.value })}
+                        placeholder="Фамилия"
+                      />
+                    </div>
+                  </div>
+                  <Button 
+                    onClick={() => createSubscriberMutation.mutate(newSubscriber)}
+                    disabled={createSubscriberMutation.isPending || !newSubscriber.chatId}
+                    className="w-full"
+                  >
+                    {createSubscriberMutation.isPending ? "Добавление..." : "Добавить подписчика"}
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Подписчики Telegram</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    Пользователи, которые будут получать уведомления о новых заявках
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {subscribers.map((subscriber) => (
+                      <div key={subscriber.id} className="flex items-center justify-between p-4 border rounded-lg">
+                        <div>
+                          <h4 className="font-medium">
+                            {subscriber.firstName} {subscriber.lastName}
+                          </h4>
+                          {subscriber.username && (
+                            <p className="text-sm text-muted-foreground">@{subscriber.username}</p>
+                          )}
+                          <p className="text-xs text-muted-foreground">
+                            ID: {subscriber.chatId}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Подписался: {new Date(subscriber.createdAt!).toLocaleString('ru-RU')}
+                          </p>
+                        </div>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => deleteSubscriberMutation.mutate(subscriber.id)}
+                          disabled={deleteSubscriberMutation.isPending}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    ))}
+                    {subscribers.length === 0 && (
+                      <div className="text-center py-8">
+                        <p className="text-muted-foreground mb-4">Пока нет подписчиков</p>
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                          <h4 className="font-medium text-blue-900 mb-2">Как получить Chat ID:</h4>
+                          <ol className="text-sm text-blue-800 space-y-1">
+                            <li>1. Напишите боту @userinfobot в Telegram</li>
+                            <li>2. Он покажет ваш Chat ID</li>
+                            <li>3. Скопируйте ID и добавьте подписчика выше</li>
+                          </ol>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           <TabsContent value="images">

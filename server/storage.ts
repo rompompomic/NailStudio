@@ -42,6 +42,7 @@ export interface IStorage {
   getSubscribers(): Promise<Subscriber[]>;
   createSubscriber(subscriber: InsertSubscriber): Promise<Subscriber>;
   getSubscriberByChatId(chatId: string): Promise<Subscriber | undefined>;
+  deleteSubscriber(id: string): Promise<void>;
   
   // Images
   getImages(): Promise<Image[]>;
@@ -279,6 +280,10 @@ export class MemStorage implements IStorage {
     return Array.from(this.subscribers.values()).find(sub => sub.chatId === chatId);
   }
 
+  async deleteSubscriber(id: string): Promise<void> {
+    this.subscribers.delete(id);
+  }
+
   async getImages(): Promise<Image[]> {
     return Array.from(this.images.values()).sort((a, b) => 
       new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime()
@@ -305,4 +310,14 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Choose storage implementation
+// FileStorage - stores data in JSON files (recommended for simplicity)
+// MemStorage - stores data in memory (data lost on restart)
+
+import { FileStorage } from "./file-storage";
+
+// Use file storage (data persists between restarts)
+export const storage = new FileStorage();
+
+// Uncomment the line below to use in-memory storage
+// export const storage = new MemStorage();

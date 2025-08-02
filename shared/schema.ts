@@ -10,6 +10,10 @@ export const settings = pgTable("settings", {
   masterSignature: text("master_signature").notNull().default("Мастер маникюра и nail-дизайна"),
   masterDescription: text("master_description").notNull().default("Создаю красивые и здоровые ногти уже более 5 лет. Индивидуальный подход к каждому клиенту."),
   masterPhoto: text("master_photo"),
+  experienceYears: text("experience_years").default("5+"),
+  experienceText: text("experience_text").default("лет опыта"),
+  satisfiedClients: text("satisfied_clients").default("500+"),
+  clientsText: text("clients_text").default("довольных клиентов"),
   telegramEnabled: boolean("telegram_enabled").default(false),
   telegramUsername: text("telegram_username"),
   whatsappEnabled: boolean("whatsapp_enabled").default(false),
@@ -17,6 +21,7 @@ export const settings = pgTable("settings", {
   instagramEnabled: boolean("instagram_enabled").default(false),
   instagramUsername: text("instagram_username"),
   botToken: text("bot_token"),
+  copyright: text("copyright").default("© 2024 Все права защищены"),
   adminPassword: text("admin_password").notNull(),
 });
 
@@ -27,6 +32,9 @@ export const blocks = pgTable("blocks", {
   title: text("title").notNull(),
   content: text("content"),
   image: text("image"),
+  images: text("images"), // JSON array of image paths
+  stats: text("stats"), // JSON array of statistics
+  order: integer("order").default(0), // For ordering blocks
 });
 
 export const services = pgTable("services", {
@@ -35,6 +43,7 @@ export const services = pgTable("services", {
   description: text("description").notNull(),
   price: text("price").notNull(),
   icon: text("icon").default("💅"),
+  image: text("image"), // Путь к изображению услуги
 });
 
 export const reviews = pgTable("reviews", {

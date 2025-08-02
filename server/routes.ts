@@ -46,6 +46,8 @@ async function sendToTelegram(message: string) {
     return;
   }
 
+  console.log(`Sending notification to ${subscribers.length} subscribers`);
+
   for (const subscriber of subscribers) {
     try {
       const response = await fetch(`https://api.telegram.org/bot${settings.botToken}/sendMessage`, {
@@ -58,11 +60,14 @@ async function sendToTelegram(message: string) {
         })
       });
 
-      if (!response.ok) {
-        console.error(`Failed to send message to ${subscriber.chatId}`);
+      if (response.ok) {
+        console.log(`✅ Message sent to ${subscriber.firstName || subscriber.username || subscriber.chatId}`);
+      } else {
+        const error = await response.json();
+        console.error(`❌ Failed to send message to ${subscriber.chatId}:`, error);
       }
     } catch (error) {
-      console.error(`Error sending message to ${subscriber.chatId}:`, error);
+      console.error(`❌ Error sending message to ${subscriber.chatId}:`, error);
     }
   }
 }
@@ -84,6 +89,50 @@ async function validateAdmin(req: Request, res: Response, next: Function) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Удаление загруженного файла по пути
+  app.delete('/api/admin/delete-upload', validateAdmin, async (req, res) => {
+    try {
+      // Поддержка пути из query и из body
+      let filePath = req.query.path;
+      if (!filePath || typeof filePath !== 'string') {
+        // Если не пришло в query, пробуем взять из body
+        if (req.body && typeof req.body.path === 'string') {
+          filePath = req.body.path;
+        }
+      }
+      if (!filePath || typeof filePath !== 'string') {
+        console.error('Path is required for file deletion:', filePath);
+        return res.status(400).json({ message: 'Path is required' });
+      }
+      // Защита: разрешаем удалять только из папки uploads
+      if (!filePath.startsWith('/uploads/')) {
+        console.error('Invalid path for file deletion:', filePath);
+        return res.status(400).json({ message: 'Invalid path' });
+      }
+      const absPath = path.join(process.cwd(), filePath);
+      let blockId = req.query.blockId || (req.body && req.body.blockId);
+      let imageUrl = req.query.imageUrl || (req.body && req.body.imageUrl);
+      try {
+        await fs.unlink(absPath);
+        // Если передан blockId и imageUrl, удаляем ссылку на изображение из блока
+        if (blockId && imageUrl) {
+          const blocks = await storage.getBlocks();
+          const block = blocks.find(b => b.id === blockId);
+          if (block && Array.isArray(block.images)) {
+            const newImages = block.images.filter(img => img !== imageUrl && img !== filePath);
+            await storage.updateBlock(blockId, { images: newImages });
+          }
+        }
+        res.json({ success: true });
+      } catch (err) {
+        console.error('Failed to delete file:', absPath, err);
+        res.status(500).json({ message: 'Failed to delete file', error: String(err) });
+      }
+    } catch (error) {
+      console.error('Unexpected error in delete-upload:', error);
+      res.status(500).json({ message: 'Failed to delete file', error: String(error) });
+    }
+  });
   await ensureUploadDir();
 
   // Serve uploaded files
@@ -213,7 +262,29 @@ ${requestData.comment ? `💬 <b>Комментарий:</b> ${requestData.comme
       const updatedBlock = await storage.updateBlock(req.params.id, blockData);
       res.json(updatedBlock);
     } catch (error) {
+      console.error('Error updating block:', error);
       res.status(400).json({ message: 'Failed to update block' });
+    }
+  });
+
+  app.post('/api/admin/blocks', validateAdmin, async (req, res) => {
+    try {
+      const blockData = insertBlockSchema.parse(req.body);
+      const newBlock = await storage.createBlock(blockData);
+      res.json(newBlock);
+    } catch (error) {
+      console.error('Error creating block:', error);
+      res.status(400).json({ message: 'Failed to create block' });
+    }
+  });
+
+  app.delete('/api/admin/blocks/:id', validateAdmin, async (req, res) => {
+    try {
+      await storage.deleteBlock(req.params.id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error deleting block:', error);
+      res.status(500).json({ message: 'Failed to delete block' });
     }
   });
 
@@ -331,20 +402,113 @@ ${requestData.comment ? `💬 <b>Комментарий:</b> ${requestData.comme
     }
   });
 
+  app.get('/api/admin/subscribers', validateAdmin, async (req, res) => {
+    try {
+      const subscribers = await storage.getSubscribers();
+      res.json(subscribers);
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to get subscribers' });
+    }
+  });
+
+  app.delete('/api/admin/subscribers/:id', validateAdmin, async (req, res) => {
+    try {
+      await storage.deleteSubscriber(req.params.id);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to delete subscriber' });
+    }
+  });
+
+  app.post('/api/admin/subscribers', validateAdmin, async (req, res) => {
+    try {
+      const { chatId, firstName, lastName, username } = req.body;
+      
+      if (!chatId) {
+        return res.status(400).json({ message: 'Chat ID is required' });
+      }
+
+      const existingSubscriber = await storage.getSubscriberByChatId(chatId);
+      if (existingSubscriber) {
+        return res.status(400).json({ message: 'Subscriber already exists' });
+      }
+
+      const newSubscriber = await storage.createSubscriber({
+        chatId,
+        firstName: firstName || null,
+        lastName: lastName || null,
+        username: username || null,
+      });
+
+      res.json(newSubscriber);
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to create subscriber' });
+    }
+  });
+
+  app.post('/api/admin/telegram/test', validateAdmin, async (req, res) => {
+    try {
+      const settings = await storage.getSettings();
+      if (!settings.botToken) {
+        return res.status(400).json({ message: 'Bot token not configured' });
+      }
+
+      const subscribers = await storage.getSubscribers();
+      if (subscribers.length === 0) {
+        return res.status(400).json({ message: 'No subscribers found' });
+      }
+
+      const testMessage = `
+🔔 <b>Тестовое уведомление!</b>
+
+Это тестовое сообщение от ${settings.masterName}.
+Если вы его получили, значит настройка работает правильно!
+
+⏰ <b>Время:</b> ${new Date().toLocaleString('ru-RU')}
+      `.trim();
+
+      let successCount = 0;
+      for (const subscriber of subscribers) {
+        try {
+          const response = await fetch(`https://api.telegram.org/bot${settings.botToken}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: subscriber.chatId,
+              text: testMessage,
+              parse_mode: 'HTML'
+            })
+          });
+
+          if (response.ok) {
+            successCount++;
+          }
+        } catch (error) {
+          console.error(`Error sending test message to ${subscriber.chatId}:`, error);
+        }
+      }
+
+      res.json({ 
+        success: true, 
+        message: `Отправлено ${successCount} из ${subscribers.length} подписчиков` 
+      });
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to send test message' });
+    }
+  });
+
   app.delete('/api/admin/images/:id', validateAdmin, async (req, res) => {
     try {
       const images = await storage.getImages();
       const image = images.find(img => img.id === req.params.id);
-      
-      if (image) {
-        const filePath = path.join(uploadDir, image.filename);
+      if (image && image.path) {
+        const filePath = path.join(process.cwd(), image.path);
         try {
           await fs.unlink(filePath);
         } catch (error) {
           console.error('Failed to delete file:', error);
         }
       }
-      
       await storage.deleteImage(req.params.id);
       res.json({ success: true });
     } catch (error) {

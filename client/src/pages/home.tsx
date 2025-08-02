@@ -1,3 +1,5 @@
+import { Carousel } from "@/components/ui/carousel";
+import { CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -5,31 +7,38 @@ import { Badge } from "@/components/ui/badge";
 import { Phone } from "lucide-react";
 import { FaTelegramPlane, FaWhatsapp, FaInstagram } from "react-icons/fa";
 import BookingForm from "@/components/booking-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import type { Service, Block, Review, Settings } from "@shared/schema";
+import { AutoplayCarousel } from "@/components/ui/auto-carousel";
 
 export default function Home() {
   const [showBookingForm, setShowBookingForm] = useState(false);
 
-  const { data: settings } = useQuery({
+  const { data: settings = {} as Settings } = useQuery<Settings>({
     queryKey: ["/api/settings"],
   });
 
-  const { data: blocks = [] } = useQuery({
+  const { data: blocks = [] as Block[] } = useQuery<Block[]>({
     queryKey: ["/api/blocks"],
   });
 
-  const { data: services = [] } = useQuery({
+  const { data: services = [] as Service[] } = useQuery<Service[]>({
     queryKey: ["/api/services"],
   });
 
-  const { data: reviews = [] } = useQuery({
+  const { data: reviews = [] as Review[] } = useQuery<Review[]>({
     queryKey: ["/api/reviews"],
   });
 
-  const aboutBlock = blocks.find(b => b.blockType === 'about');
-  const servicesBlock = blocks.find(b => b.blockType === 'services');
-  const reviewsBlock = blocks.find(b => b.blockType === 'reviews');
-  const contactsBlock = blocks.find(b => b.blockType === 'contacts');
+  // Сортируем блоки по порядку и фильтруем только включенные
+  const enabledBlocks = blocks
+    .filter(b => b.enabled)
+    .sort((a, b) => (a.order || 0) - (b.order || 0));
+
+  const aboutBlock = enabledBlocks.find(b => b.blockType === 'about');
+  const servicesBlock = enabledBlocks.find(b => b.blockType === 'services');
+  const reviewsBlock = enabledBlocks.find(b => b.blockType === 'reviews');
+  const contactsBlock = enabledBlocks.find(b => b.blockType === 'contacts');
 
   if (!settings) {
     return (
@@ -144,8 +153,8 @@ export default function Home() {
               />
               <div className="absolute -bottom-6 -right-6 bg-white rounded-2xl p-4 shadow-gentle">
                 <div className="text-center">
-                  <div className="text-2xl font-semibold text-foreground">5+</div>
-                  <div className="text-sm text-muted-foreground">лет опыта</div>
+                  <div className="text-2xl font-semibold text-foreground">{settings.experienceYears || "5+"}</div>
+                  <div className="text-sm text-muted-foreground">{settings.experienceText || "лет опыта"}</div>
                 </div>
               </div>
             </div>
@@ -168,24 +177,60 @@ export default function Home() {
                   ))}
                 </div>
                 
-                <div className="grid grid-cols-2 gap-6 pt-6">
-                  <div className="text-center">
-                    <div className="text-2xl font-semibold text-foreground">500+</div>
-                    <div className="text-sm text-muted-foreground">довольных клиентов</div>
+                {aboutBlock.stats && (
+                  <div className="grid grid-cols-2 gap-6 pt-6">
+                    {JSON.parse(aboutBlock.stats).map((stat: any, index: number) => (
+                      <div key={index} className="text-center">
+                        <div className="text-2xl font-semibold text-foreground">{stat.label}</div>
+                        <div className="text-sm text-muted-foreground">{stat.value}</div>
+                      </div>
+                    ))}
                   </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-semibold text-foreground">5</div>
-                    <div className="text-sm text-muted-foreground">лет опыта</div>
-                  </div>
-                </div>
+                )}
               </div>
               
               <div className="relative animate-scale-in">
-                <img 
-                  src={aboutBlock.image || "https://images.unsplash.com/photo-1522338242992-e1a54906a8da?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"}
-                  alt="Рабочее место мастера маникюра"
-                  className="rounded-3xl shadow-soft w-full object-cover h-80"
-                />
+                {aboutBlock.images ? (
+                  <div className="space-y-4">
+                    {(() => {
+                      // Фильтруем пустые/undefined изображения
+                      const images = JSON.parse(aboutBlock.images).filter((img: string) => !!img && img !== 'null');
+                      if (images.length <= 3) {
+                        return (
+                          <div className="grid grid-cols-2 gap-4">
+                            {images.map((image: string, index: number) => (
+                              <img 
+                                key={index}
+                                src={image}
+                                alt={`Рабочее место мастера маникюра ${index + 1}`}
+                                className="rounded-2xl shadow-soft w-full object-cover h-40"
+                              />
+                            ))}
+                          </div>
+                        );
+                      } else {
+                        return (
+                          <div className="space-y-2">
+                            {images.map((image: string, index: number) => (
+                              <img 
+                                key={index}
+                                src={image}
+                                alt={`Рабочее место мастера маникюра ${index + 1}`}
+                                className="rounded-2xl shadow-soft w-full object-cover h-32"
+                              />
+                            ))}
+                          </div>
+                        );
+                      }
+                    })()}
+                  </div>
+                ) : (
+                  <img 
+                    src={aboutBlock.image || "https://images.unsplash.com/photo-1522338242992-e1a54906a8da?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"}
+                    alt="Рабочее место мастера маникюра"
+                    className="rounded-3xl shadow-soft w-full object-cover h-80"
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -204,24 +249,90 @@ export default function Home() {
                 {servicesBlock.content}
               </p>
             </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {services.map((service, index) => (
-                <Card 
-                  key={service.id} 
-                  className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-gentle transition-all duration-300 animate-slide-up"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <CardContent className="p-0">
-                    <div className="w-12 h-12 bg-gradient-pastel rounded-xl flex items-center justify-center mb-6">
-                      <span className="text-2xl">{service.icon}</span>
-                    </div>
-                    <h3 className="text-xl font-semibold text-foreground mb-3">{service.name}</h3>
-                    <p className="text-muted-foreground mb-4">{service.description}</p>
-                    <div className="text-2xl font-semibold text-accent-foreground">{service.price}</div>
-                  </CardContent>
-                </Card>
-              ))}
+            <div>
+              {services.length > 3 ? (
+                <>
+                  <div className="hidden md:block relative">
+                    <Carousel className="w-full" opts={{ 
+                      align: "start",
+                      loop: true,
+                      dragFree: true
+                    }}>
+                      <CarouselContent className="-ml-4">
+                        {services.map((service, index) => (
+                          <CarouselItem key={service.id} className="pl-4 basis-1/3">
+                            <Card className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-gentle transition-all duration-300 animate-slide-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                              <CardContent className="p-0">
+                                {service.image ? (
+                                  <div className="w-full h-32 bg-gradient-pastel rounded-xl flex items-center justify-center mb-6 overflow-hidden">
+                                    <img src={service.image} alt={service.name} className="w-full h-full object-cover" />
+                                  </div>
+                                ) : (
+                                  <div className="w-12 h-12 bg-gradient-pastel rounded-xl flex items-center justify-center mb-6">
+                                    <span className="text-2xl">{service.icon}</span>
+                                  </div>
+                                )}
+                                <h3 className="text-xl font-semibold text-foreground mb-3">{service.name}</h3>
+                                <p className="text-muted-foreground mb-4">{service.description}</p>
+                                <div className="text-2xl font-semibold text-accent-foreground">{service.price}</div>
+                              </CardContent>
+                            </Card>
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                      <CarouselPrevious />
+                      <CarouselNext />
+                    </Carousel>
+                  </div>
+                  <div className="md:hidden relative">
+                    <Carousel className="w-full" opts={{ align: "start", loop: true, dragFree: true }}>
+                      <CarouselContent className="-ml-4">
+                        {services.map((service, index) => (
+                          <CarouselItem key={service.id} className="pl-4 basis-full">
+                            <Card className="bg-white rounded-xl p-4 shadow-sm hover:shadow-gentle transition-all duration-300 animate-slide-up mx-2" style={{ animationDelay: `${index * 0.1}s` }}>
+                              <CardContent className="p-0">
+                                {service.image ? (
+                                  <div className="w-full h-24 bg-gradient-pastel rounded-xl flex items-center justify-center mb-4 overflow-hidden">
+                                    <img src={service.image} alt={service.name} className="w-full h-full object-cover" />
+                                  </div>
+                                ) : (
+                                  <div className="w-10 h-10 bg-gradient-pastel rounded-xl flex items-center justify-center mb-4">
+                                    <span className="text-xl">{service.icon}</span>
+                                  </div>
+                                )}
+                                <h3 className="text-base font-semibold text-foreground mb-2">{service.name}</h3>
+                                <p className="text-muted-foreground mb-2 text-sm">{service.description}</p>
+                                <div className="text-xl font-semibold text-accent-foreground">{service.price}</div>
+                              </CardContent>
+                            </Card>
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                    </Carousel>
+                  </div>
+                </>
+              ) : (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {services.map((service, index) => (
+                    <Card key={service.id} className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-gentle transition-all duration-300 animate-slide-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                      <CardContent className="p-0">
+                        {service.image ? (
+                          <div className="w-full h-32 bg-gradient-pastel rounded-xl flex items-center justify-center mb-6 overflow-hidden">
+                            <img src={service.image} alt={service.name} className="w-full h-full object-cover" />
+                          </div>
+                        ) : (
+                          <div className="w-12 h-12 bg-gradient-pastel rounded-xl flex items-center justify-center mb-6">
+                            <span className="text-2xl">{service.icon}</span>
+                          </div>
+                        )}
+                        <h3 className="text-xl font-semibold text-foreground mb-3">{service.name}</h3>
+                        <p className="text-muted-foreground mb-4">{service.description}</p>
+                        <div className="text-2xl font-semibold text-accent-foreground">{service.price}</div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </section>
@@ -372,6 +483,86 @@ export default function Home() {
         </section>
       )}
 
+      {/* Custom/Universal Blocks Section */}
+      {enabledBlocks
+        .filter(b => !['about', 'services', 'reviews', 'contacts'].includes(b.blockType))
+        .map(block => (
+          <section key={block.id} className="py-20 bg-white">
+            <div className="max-w-6xl mx-auto px-6">
+              <div className="space-y-6 animate-slide-up">
+                <h2 className="text-3xl md:text-4xl font-light text-foreground">
+                  {block.title}
+                </h2>
+                <div className="space-y-4 text-muted-foreground leading-relaxed">
+                  {block.content?.split('\n').map((paragraph, index) => (
+                    <p key={index}>{paragraph}</p>
+                  ))}
+                </div>
+                {/* Картинки, если есть */}
+                {block.images && (() => {
+                  const images = JSON.parse(block.images).filter((img: any) => 
+                    !!img && img !== 'null' && (typeof img === 'string' || !!img.path)
+                  );
+                  
+                  if (images.length > 0) {
+                    return (
+                      <div className="pt-6">
+                        {images.length > 3 ? (
+                          <Carousel className="w-full" opts={{ 
+                            align: "start",
+                            loop: true,
+                            dragFree: true
+                          }}>
+                            <CarouselContent className="-ml-4">
+                              {images.map((img: any, idx: number) => {
+                                const imageData = typeof img === 'string'
+                                  ? { path: img, width: '100%', height: '250px' }
+                                  : img;
+                                return (
+                                  <CarouselItem key={idx} className="pl-4 md:basis-1/3 basis-full">
+                                    <div className="aspect-[4/3] w-full">
+                                      <img 
+                                        src={imageData.path}
+                                        alt={block.title}
+                                        className="rounded-2xl shadow-soft w-full h-full object-cover"
+                                      />
+                                    </div>
+                                  </CarouselItem>
+                                );
+                              })}
+                            </CarouselContent>
+                            <CarouselPrevious />
+                            <CarouselNext />
+                          </Carousel>
+                        ) : (
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {images.map((img: any, idx: number) => {
+                              const imageData = typeof img === 'string' 
+                                ? { path: img, width: '100%', height: '250px' }
+                                : img;
+                          
+                              return (
+                                <div key={idx} className="aspect-[4/3]">
+                                  <img 
+                                    src={imageData.path}
+                                    alt={block.title}
+                                    className="rounded-2xl shadow-soft w-full h-full object-cover"
+                                  />
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
+              </div>
+            </div>
+          </section>
+        ))}
+
       {/* Footer */}
       <footer className="bg-muted py-8">
         <div className="max-w-6xl mx-auto px-6">
@@ -385,7 +576,7 @@ export default function Home() {
               <span className="text-muted-foreground">{settings.masterName} • Мастер маникюра</span>
             </div>
             <div className="text-muted-foreground text-sm">
-              © 2024 Все права защищены
+              {settings.copyright || "© 2024 Все права защищены"}
             </div>
           </div>
         </div>

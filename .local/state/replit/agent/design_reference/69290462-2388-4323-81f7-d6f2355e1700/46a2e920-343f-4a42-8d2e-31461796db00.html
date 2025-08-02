@@ -1,0 +1,712 @@
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Анна Петрова - Мастер маникюра | Профессиональный уход за ногтями</title>
+    <meta name="description" content="Профессиональный мастер маникюра Анна Петрова. Качественные услуги маникюра, педикюра и nail-дизайна. Запись онлайн.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'manrope': ['Manrope', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#F8F4F0',
+                        secondary: '#FDF2F8', 
+                        accent: '#E5E7EB',
+                        warm: '#F59E0B',
+                        sage: '#10B981'
+                    }
+                }
+            }
+        };
+    </script>
+</head>
+<body class="font-manrope bg-primary text-gray-700 antialiased">
+    
+    <!-- @COMPONENT: Header [sticky navigation with logo and contact] -->
+    <header class="sticky top-0 bg-white/90 backdrop-blur-sm border-b border-gray-100 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-pink-200 to-amber-200 rounded-full flex items-center justify-center">
+                        <span class="text-gray-700 font-semibold text-lg">АП</span>
+                    </div>
+                    <span class="text-xl font-semibold text-gray-800" data-bind="master.name">Анна Петрова</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#about" class="text-gray-600 hover:text-gray-800 transition-colors">Обо мне</a>
+                    <a href="#services" class="text-gray-600 hover:text-gray-800 transition-colors">Услуги</a>
+                    <a href="#reviews" class="text-gray-600 hover:text-gray-800 transition-colors">Отзывы</a>
+                    <a href="#contacts" class="text-gray-600 hover:text-gray-800 transition-colors">Контакты</a>
+                </div>
+                <button class="bg-warm text-white px-6 py-2 rounded-full font-medium hover:bg-amber-600 transition-colors" data-event="click:openBookingForm">
+                    Записаться
+                </button>
+            </div>
+        </div>
+    </header>
+    <!-- @END_COMPONENT: Header -->
+
+    <!-- @COMPONENT: Hero [main screen with photo, name and signature] -->
+    <section class="py-20 bg-gradient-to-br from-primary via-white to-secondary">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="text-center md:text-left space-y-8">
+                    <div class="space-y-4">
+                        <h1 class="text-4xl md:text-5xl font-light text-gray-800 leading-tight" data-bind="master.name">
+                            Анна Петрова
+                        </h1>
+                        <p class="text-xl text-gray-600 font-light" data-bind="master.signature">
+                            Мастер маникюра и nail-дизайна
+                        </p>
+                        <p class="text-lg text-gray-500 max-w-md" data-bind="master.description">
+                            Создаю красивые и здоровые ногти уже более 5 лет. 
+                            Индивидуальный подход к каждому клиенту.
+                        </p>
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                        <button class="bg-warm text-white px-8 py-3 rounded-full font-medium hover:bg-amber-600 transition-colors flex items-center justify-center space-x-2" data-event="click:openBookingForm">
+                            <span>Записаться на маникюр</span>
+                        </button>
+                        <a href="tel:+79501234567" class="border border-gray-300 text-gray-700 px-8 py-3 rounded-full font-medium hover:bg-gray-50 transition-colors flex items-center justify-center space-x-2" data-bind="master.phone">
+                            <span>+7 (950) 123-45-67</span>
+                        </a>
+                    </div>
+
+                    <div class="flex items-center justify-center md:justify-start space-x-6 pt-4">
+                        <!-- Telegram SVG Icon -->
+                        <a href="#" class="text-gray-400 hover:text-blue-500 transition-colors" data-bind="master.social.telegram">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.568 8.16l-1.58 7.44c-.12.546-.432.678-.876.42l-2.436-1.8-1.176 1.128c-.132.132-.24.24-.492.24l.168-2.4 4.344-3.924c.192-.168-.036-.264-.3-.096l-5.364 3.372-2.316-.732c-.504-.156-.516-.504.108-.744l9.024-3.48c.42-.156.792.096.66.576z"/>
+                            </svg>
+                        </a>
+                        <!-- WhatsApp SVG Icon -->
+                        <a href="#" class="text-gray-400 hover:text-green-500 transition-colors" data-bind="master.social.whatsapp">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.97.52 3.9 1.52 5.62L2 22l4.57-1.63c1.68.9 3.54 1.37 5.47 1.37 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2zm6.72 12.76c-.3.84-1.47 1.54-2.41 1.74-.63.14-1.45.25-4.22-.89-2.94-1.21-4.85-4.17-5-4.36-.14-.19-1.2-1.6-1.2-3.05s.76-2.16 1.03-2.46c.27-.3.59-.37.79-.37.2 0 .4.01.57.01.18 0 .43-.07.67.51.25.62.84 2.05.92 2.2.08.15.13.32.03.52-.1.2-.15.32-.3.5-.15.18-.32.4-.45.54-.15.15-.3.31-.13.61.17.3.76 1.26 1.64 2.04 1.13.99 2.08 1.3 2.38 1.44.3.14.47.12.64-.07.17-.2.72-.84.91-1.13.19-.29.38-.24.64-.14.26.1 1.66.78 1.95.92.29.14.48.21.55.33.07.12.07.69-.23 1.53z"/>
+                            </svg>
+                        </a>
+                        <!-- Instagram SVG Icon -->
+                        <a href="#" class="text-gray-400 hover:text-pink-500 transition-colors" data-bind="master.social.instagram">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.43.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.43.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.43-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.43-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07zm0-2.16c-3.26 0-3.67.01-4.95.07-1.28.06-2.15.27-2.91.58-.79.31-1.46.72-2.13 1.39-.67.67-1.08 1.34-1.39 2.13-.31.76-.52 1.63-.58 2.91-.06 1.28-.07 1.69-.07 4.95s.01 3.67.07 4.95c.06 1.28.27 2.15.58 2.91.31.79.72 1.46 1.39 2.13.67.67 1.34 1.08 2.13 1.39.76.31 1.63.52 2.91.58 1.28.06 1.69.07 4.95.07s3.67-.01 4.95-.07c1.28-.06 2.15-.27 2.91-.58.79-.31 1.46-.72 2.13-1.39.67-.67 1.08-1.34 1.39-2.13.31-.76.52-1.63.58-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.28-.27-2.15-.58-2.91-.31-.79-.72-1.46-1.39-2.13-.67-.67-1.34-1.08-2.13-1.39-.76-.31-1.63-.52-2.91-.58-1.28-.06-1.69-.07-4.95-.07zm0 5.84c-3.4 0-6.16 2.76-6.16 6.16s2.76 6.16 6.16 6.16 6.16-2.76 6.16-6.16-2.76-6.16-6.16-6.16zm0 10.15c-2.2 0-3.99-1.79-3.99-3.99s1.79-3.99 3.99-3.99 3.99 1.79 3.99 3.99-1.79 3.99-3.99 3.99zm7.85-10.4c0 .8-.65 1.44-1.44 1.44s-1.44-.64-1.44-1.44.65-1.44 1.44-1.44 1.44.64 1.44 1.44z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="relative">
+                    <!-- Professional nail master with manicure tools and elegant nail designs -->
+                    <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=1000" 
+                         alt="Мастер маникюра Анна Петрова" 
+                         class="rounded-3xl shadow-2xl w-full max-w-md mx-auto object-cover h-96" 
+                         data-bind="master.photo" />
+                    <div class="absolute -bottom-6 -right-6 bg-white rounded-2xl p-4 shadow-lg">
+                        <div class="text-center">
+                            <div class="text-2xl font-semibold text-gray-800">5+</div>
+                            <div class="text-sm text-gray-600">лет опыта</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: Hero -->
+
+    <!-- @COMPONENT: About [title, text, photo] -->
+    <section id="about" class="py-20 bg-white" data-block="about">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <h2 class="text-3xl md:text-4xl font-light text-gray-800" data-bind="about.title">
+                        Обо мне
+                    </h2>
+                    <div class="space-y-4 text-gray-600 leading-relaxed" data-bind="about.content">
+                        <p>
+                            Меня зовут Анна, и я занимаюсь nail-индустрией уже более 5 лет. 
+                            Моя страсть — создавать красивые и здоровые ногти, которые подчеркивают 
+                            индивидуальность каждой клиентки.
+                        </p>
+                        <p>
+                            Постоянно изучаю новые техники и тренды в маникюре, использую только 
+                            качественные материалы ведущих мировых брендов. Для меня важно не просто 
+                            сделать красивый маникюр, но и обеспечить здоровье ваших ногтей.
+                        </p>
+                        <p>
+                            Создаю атмосферу комфорта и уюта в своем кабинете, где каждая клиентка 
+                            может расслабиться и получить удовольствие от процедуры.
+                        </p>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-6 pt-6">
+                        <div class="text-center">
+                            <div class="text-2xl font-semibold text-gray-800">500+</div>
+                            <div class="text-sm text-gray-600">довольных клиентов</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-semibold text-gray-800">5</div>
+                            <div class="text-sm text-gray-600">лет опыта</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="relative">
+                    <!-- Nail artist workspace with professional manicure tools and polish collection -->
+                    <img src="https://pixabay.com/get/g2d7e8f712ebb23cc2a6c277802cfc0ed2bc7a8aed85e1bec78a3f50906265e351aa5fa686052857e0539095c46306084a1bbd8987503811ef6c24d5175c156b0_1280.jpg" 
+                         alt="Рабочее место мастера маникюра" 
+                         class="rounded-3xl shadow-xl w-full object-cover h-80" 
+                         data-bind="about.image" />
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: About -->
+
+    <!-- @COMPONENT: Services [list of services with descriptions] -->
+    <section id="services" class="py-20 bg-gradient-to-br from-secondary to-primary" data-block="services">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-light text-gray-800 mb-4" data-bind="services.title">
+                    Мои услуги
+                </h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto" data-bind="services.subtitle">
+                    Профессиональный уход за ногтями с использованием качественных материалов
+                </p>
+            </div>
+
+            <!-- @MAP: services.map(service => ( -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-lg transition-shadow" data-mock="true">
+                    <div class="w-12 h-12 bg-gradient-to-br from-pink-100 to-amber-100 rounded-xl flex items-center justify-center mb-6">
+                        <span class="text-2xl">💅</span>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Классический маникюр</h3>
+                    <p class="text-gray-600 mb-4">Обработка кутикулы, придание формы ногтям, покрытие лаком на выбор</p>
+                    <div class="text-2xl font-semibold text-warm">от 1500₽</div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-lg transition-shadow" data-mock="true">
+                    <div class="w-12 h-12 bg-gradient-to-br from-pink-100 to-amber-100 rounded-xl flex items-center justify-center mb-6">
+                        <span class="text-2xl">✨</span>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Гель-лак</h3>
+                    <p class="text-gray-600 mb-4">Стойкое покрытие гель-лаком, которое держится до 3 недель</p>
+                    <div class="text-2xl font-semibold text-warm">от 2000₽</div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-lg transition-shadow" data-mock="true">
+                    <div class="w-12 h-12 bg-gradient-to-br from-pink-100 to-amber-100 rounded-xl flex items-center justify-center mb-6">
+                        <span class="text-2xl">🎨</span>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Nail-дизайн</h3>
+                    <p class="text-gray-600 mb-4">Художественная роспись, стразы, слайдеры, френч и другие дизайны</p>
+                    <div class="text-2xl font-semibold text-warm">от 2500₽</div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-lg transition-shadow" data-mock="true">
+                    <div class="w-12 h-12 bg-gradient-to-br from-pink-100 to-amber-100 rounded-xl flex items-center justify-center mb-6">
+                        <span class="text-2xl">🦶</span>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Педикюр</h3>
+                    <p class="text-gray-600 mb-4">Комплексный уход за стопами и ногтями, обработка огрубевшей кожи</p>
+                    <div class="text-2xl font-semibold text-warm">от 2200₽</div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-lg transition-shadow" data-mock="true">
+                    <div class="w-12 h-12 bg-gradient-to-br from-pink-100 to-amber-100 rounded-xl flex items-center justify-center mb-6">
+                        <span class="text-2xl">💪</span>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Укрепление ногтей</h3>
+                    <p class="text-gray-600 mb-4">Процедуры для восстановления и укрепления тонких, ломких ногтей</p>
+                    <div class="text-2xl font-semibold text-warm">от 1800₽</div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-lg transition-shadow" data-mock="true">
+                    <div class="w-12 h-12 bg-gradient-to-br from-pink-100 to-amber-100 rounded-xl flex items-center justify-center mb-6">
+                        <span class="text-2xl">💎</span>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Spa-уход</h3>
+                    <p class="text-gray-600 mb-4">Расслабляющие процедуры для рук: массаж, маски, парафинотерапия</p>
+                    <div class="text-2xl font-semibold text-warm">от 1200₽</div>
+                </div>
+            </div>
+            <!-- @END_MAP )) -->
+        </div>
+    </section>
+    <!-- @END_COMPONENT: Services -->
+
+    <!-- @COMPONENT: Reviews [name, text, photo] -->
+    <section id="reviews" class="py-20 bg-white" data-block="reviews">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-light text-gray-800 mb-4" data-bind="reviews.title">
+                    Отзывы клиентов
+                </h2>
+                <p class="text-lg text-gray-600" data-bind="reviews.subtitle">
+                    Что говорят мои клиенты о качестве работы
+                </p>
+            </div>
+
+            <!-- @MAP: reviews.map(review => ( -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-secondary/50 rounded-2xl p-8" data-mock="true">
+                    <div class="flex items-center mb-6">
+                        <!-- Portrait of a happy female client with beautiful manicured nails -->
+                        <img src="https://pixabay.com/get/gb52e5abf99a1f52c0dbe38629f304370c65ad0967af10f09f96f9e27d5c4c7ff6bdcfe4a8bc74471c3fd4802edccd86a58b1d250f82c8689be0641fbf7dcee0f_1280.jpg" 
+                             alt="Елена Смирнова" 
+                             class="w-12 h-12 rounded-full object-cover mr-4" />
+                        <div>
+                            <div class="font-semibold text-gray-800">Елена Смирнова</div>
+                            <div class="text-sm text-gray-600">Постоянная клиентка</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed">
+                        "Анна — настоящий профессионал! Хожу к ней уже больше года, всегда довольна результатом. 
+                        Маникюр держится идеально, кутикула обработана аккуратно. Очень рекомендую!"
+                    </p>
+                </div>
+
+                <div class="bg-secondary/50 rounded-2xl p-8" data-mock="true">
+                    <div class="flex items-center mb-6">
+                        <!-- Portrait of a satisfied young woman showing off her nail art -->
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=150&h=150" 
+                             alt="Мария Козлова" 
+                             class="w-12 h-12 rounded-full object-cover mr-4" />
+                        <div>
+                            <div class="font-semibold text-gray-800">Мария Козлова</div>
+                            <div class="text-sm text-gray-600">Любитель nail-дизайна</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed">
+                        "Обожаю дизайны, которые создает Анна! Каждый раз что-то новое и креативное. 
+                        Всегда прислушивается к пожеланиям и предлагает интересные идеи."
+                    </p>
+                </div>
+
+                <div class="bg-secondary/50 rounded-2xl p-8" data-mock="true">
+                    <div class="flex items-center mb-6">
+                        <!-- Portrait of a professional woman with elegant natural manicure -->
+                        <img src="https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=150&h=150" 
+                             alt="Ольга Петренко" 
+                             class="w-12 h-12 rounded-full object-cover mr-4" />
+                        <div>
+                            <div class="font-semibold text-gray-800">Ольга Петренко</div>
+                            <div class="text-sm text-gray-600">Деловая женщина</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed">
+                        "Идеальное сочетание качества и скорости. Анна всегда укладывается в оговоренное время, 
+                        при этом результат всегда на высоте. Очень ценю профессионализм!"
+                    </p>
+                </div>
+
+                <div class="bg-secondary/50 rounded-2xl p-8" data-mock="true">
+                    <div class="flex items-center mb-6">
+                        <!-- Portrait of a trendy young woman with colorful nail design -->
+                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=150&h=150" 
+                             alt="Анастасия Волкова" 
+                             class="w-12 h-12 rounded-full object-cover mr-4" />
+                        <div>
+                            <div class="font-semibold text-gray-800">Анастасия Волкова</div>
+                            <div class="text-sm text-gray-600">Модница</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed">
+                        "Впервые попала к Анне по рекомендации подруги и теперь больше никому не доверяю свои ногти. 
+                        Чистота, стерильность, качественные материалы — все на высшем уровне!"
+                    </p>
+                </div>
+
+                <div class="bg-secondary/50 rounded-2xl p-8" data-mock="true">
+                    <div class="flex items-center mb-6">
+                        <!-- Portrait of a mature elegant woman with classic French manicure -->
+                        <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=150&h=150" 
+                             alt="Ирина Соколова" 
+                             class="w-12 h-12 rounded-full object-cover mr-4" />
+                        <div>
+                            <div class="font-semibold text-gray-800">Ирина Соколова</div>
+                            <div class="text-sm text-gray-600">Ценитель классики</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed">
+                        "Анна умеет создать уютную атмосферу, время пролетает незаметно. 
+                        А главное — ногти выглядят естественно и ухоженно, именно то, что я искала."
+                    </p>
+                </div>
+
+                <div class="bg-secondary/50 rounded-2xl p-8" data-mock="true">
+                    <div class="flex items-center mb-6">
+                        <!-- Portrait of a young professional with minimalist nail design -->
+                        <img src="https://images.unsplash.com/photo-1526510747491-58f928ec870f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=150&h=150" 
+                             alt="Дарья Медведева" 
+                             class="w-12 h-12 rounded-full object-cover mr-4" />
+                        <div>
+                            <div class="font-semibold text-gray-800">Дарья Медведева</div>
+                            <div class="text-sm text-gray-600">Любитель минимализма</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed">
+                        "Обращаюсь к Анне уже третий год. За это время она стала не просто мастером, 
+                        но и хорошим другом. Всегда можно обсудить новинки и тренды в nail-индустрии."
+                    </p>
+                </div>
+            </div>
+            <!-- @END_MAP )) -->
+        </div>
+    </section>
+    <!-- @END_COMPONENT: Reviews -->
+
+    <!-- @COMPONENT: Portfolio [showcase of nail work] -->
+    <section class="py-20 bg-gradient-to-br from-primary to-secondary">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-light text-gray-800 mb-4">
+                    Мои работы
+                </h2>
+                <p class="text-lg text-gray-600">
+                    Примеры выполненных работ разной сложности
+                </p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <!-- Elegant French manicure with subtle nail art -->
+                <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=400" 
+                     alt="Французский маникюр" 
+                     class="rounded-2xl shadow-md hover:shadow-lg transition-shadow w-full h-48 object-cover cursor-pointer" />
+
+                <!-- Colorful gradient nail design with glitter accents -->
+                <img src="https://pixabay.com/get/ge6f6d565319c01906b8e82571b63341243293fe01a69889211a6a4c2b6ed27de83fdcc8205831280392a400d147e16c971e083517e713139d789d15986cdd0f2_1280.jpg" 
+                     alt="Градиентный дизайн" 
+                     class="rounded-2xl shadow-md hover:shadow-lg transition-shadow w-full h-48 object-cover cursor-pointer" />
+
+                <!-- Minimalist nude manicure with geometric patterns -->
+                <img src="https://images.unsplash.com/photo-1607779097040-26e80aa78e66?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=400" 
+                     alt="Геометрический дизайн" 
+                     class="rounded-2xl shadow-md hover:shadow-lg transition-shadow w-full h-48 object-cover cursor-pointer" />
+
+                <!-- Festive nail art with rhinestones and metallic accents -->
+                <img src="https://pixabay.com/get/g1e0ab36383bbf84490bcb4d18ade0828a3884e98972182bd5865318f8bb1a68de2c9b7b305347c11d31d618d189a9ece036bf47b97593b161386edddafb24476_1280.jpg" 
+                     alt="Праздничный дизайн" 
+                     class="rounded-2xl shadow-md hover:shadow-lg transition-shadow w-full h-48 object-cover cursor-pointer" />
+
+                <!-- Natural looking manicure with subtle shimmer -->
+                <img src="https://pixabay.com/get/gce9bd39b520b724a76d0d49e6c7e7bf2f3dd5ce52acd17f734fbae3ea475fb7a7aad73168f5da88ba59652d4b640b08a6571ad748e6a010a52151b49ea86b8c6_1280.jpg" 
+                     alt="Натуральный маникюр" 
+                     class="rounded-2xl shadow-md hover:shadow-lg transition-shadow w-full h-48 object-cover cursor-pointer" />
+
+                <!-- Bold dark manicure with matte finish -->
+                <img src="https://pixabay.com/get/gd4c0df3429fe35412c1591cb27f55514d18ce1ef18b9e5f151f44c04e6e6d4d11c3f54bb9b58d069e142858c189f5cbef3ea6567297bbf56e7a49f8885799689_1280.jpg" 
+                     alt="Матовый дизайн" 
+                     class="rounded-2xl shadow-md hover:shadow-lg transition-shadow w-full h-48 object-cover cursor-pointer" />
+
+                <!-- Pastel spring nail design with floral elements -->
+                <img src="https://pixabay.com/get/g3740ccfdc49dcb9628bfdb441e04dfb66e2c9f7c0633a73d09772d1e11e098bfac77dd6fd3fe626f8a69079ea6db84bf796aba028dca5801bed6346ce2408bf7_1280.jpg" 
+                     alt="Весенний дизайн" 
+                     class="rounded-2xl shadow-md hover:shadow-lg transition-shadow w-full h-48 object-cover cursor-pointer" />
+
+                <!-- Professional business-appropriate manicure -->
+                <img src="https://pixabay.com/get/g02bbec9a7b1381afe055bb44958ab7a74ab30937e747664a95bbc3a26547cab4be9023e1edd6809446a61d4a41a690576ef44c13a245ef9a457a8695efc10dcd_1280.jpg" 
+                     alt="Деловой стиль" 
+                     class="rounded-2xl shadow-md hover:shadow-lg transition-shadow w-full h-48 object-cover cursor-pointer" />
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: Portfolio -->
+
+    <!-- @COMPONENT: Contacts [social media and contact form] -->
+    <section id="contacts" class="py-20 bg-white" data-block="contacts">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-light text-gray-800 mb-4" data-bind="contacts.title">
+                    Контакты и запись
+                </h2>
+                <p class="text-lg text-gray-600" data-bind="contacts.subtitle">
+                    Свяжитесь со мной удобным способом или оставьте заявку
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12">
+                <div class="space-y-8">
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-6">Способы связи</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-12 h-12 bg-gradient-to-br from-pink-100 to-amber-100 rounded-xl flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zM6.5 6h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1 0-1zM6.5 9h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1 0-1z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-gray-800">Телефон</div>
+                                    <div class="text-gray-600" data-bind="master.phone">+7 (950) 123-45-67</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center space-x-4">
+                                <div class="w-12 h-12 bg-gradient-to-br from-pink-100 to-amber-100 rounded-xl flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.568 8.16l-1.58 7.44c-.12.546-.432.678-.876.42l-2.436-1.8-1.176 1.128c-.132.132-.24.24-.492.24l.168-2.4 4.344-3.924c.192-.168-.036-.264-.3-.096l-5.364 3.372-2.316-.732c-.504-.156-.516-.504.108-.744l9.024-3.48c.42-.156.792.096.66.576z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-gray-800">Telegram</div>
+                                    <div class="text-gray-600" data-bind="master.social.telegram">@anna_nails</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center space-x-4">
+                                <div class="w-12 h-12 bg-gradient-to-br from-pink-100 to-amber-100 rounded-xl flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-green-500" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.97.52 3.9 1.52 5.62L2 22l4.57-1.63c1.68.9 3.54 1.37 5.47 1.37 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2zm6.72 12.76c-.3.84-1.47 1.54-2.41 1.74-.63.14-1.45.25-4.22-.89-2.94-1.21-4.85-4.17-5-4.36-.14-.19-1.2-1.6-1.2-3.05s.76-2.16 1.03-2.46c.27-.3.59-.37.79-.37.2 0 .4.01.57.01.18 0 .43-.07.67.51.25.62.84 2.05.92 2.2.08.15.13.32.03.52-.1.2-.15.32-.3.5-.15.18-.32.4-.45.54-.15.15-.3.31-.13.61.17.3.76 1.26 1.64 2.04 1.13.99 2.08 1.3 2.38 1.44.3.14.47.12.64-.07.17-.2.72-.84.91-1.13.19-.29.38-.24.64-.14.26.1 1.66.78 1.95.92.29.14.48.21.55.33.07.12.07.69-.23 1.53z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-gray-800">WhatsApp</div>
+                                    <div class="text-gray-600" data-bind="master.social.whatsapp">+7 (950) 123-45-67</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center space-x-4">
+                                <div class="w-12 h-12 bg-gradient-to-br from-pink-100 to-amber-100 rounded-xl flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-pink-500" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.43.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.43.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.43-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.43-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07zm0-2.16c-3.26 0-3.67.01-4.95.07-1.28.06-2.15.27-2.91.58-.79.31-1.46.72-2.13 1.39-.67.67-1.08 1.34-1.39 2.13-.31.76-.52 1.63-.58 2.91-.06 1.28-.07 1.69-.07 4.95s.01 3.67.07 4.95c.06 1.28.27 2.15.58 2.91.31.79.72 1.46 1.39 2.13.67.67 1.34 1.08 2.13 1.39.76.31 1.63.52 2.91.58 1.28.06 1.69.07 4.95.07s3.67-.01 4.95-.07c1.28-.06 2.15-.27 2.91-.58.79-.31 1.46-.72 2.13-1.39.67-.67 1.08-1.34 1.39-2.13.31-.76.52-1.63.58-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.28-.27-2.15-.58-2.91-.31-.79-.72-1.46-1.39-2.13-.67-.67-1.34-1.08-2.13-1.39-.76-.31-1.63-.52-2.91-.58-1.28-.06-1.69-.07-4.95-.07zm0 5.84c-3.4 0-6.16 2.76-6.16 6.16s2.76 6.16 6.16 6.16 6.16-2.76 6.16-6.16-2.76-6.16-6.16-6.16zm0 10.15c-2.2 0-3.99-1.79-3.99-3.99s1.79-3.99 3.99-3.99 3.99 1.79 3.99 3.99-1.79 3.99-3.99 3.99zm7.85-10.4c0 .8-.65 1.44-1.44 1.44s-1.44-.64-1.44-1.44.65-1.44 1.44-1.44 1.44.64 1.44 1.44z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-gray-800">Instagram</div>
+                                    <div class="text-gray-600" data-bind="master.social.instagram">@anna_manicure</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Время работы</h3>
+                        <div class="space-y-2 text-gray-600">
+                            <div class="flex justify-between">
+                                <span>Понедельник - Пятница:</span>
+                                <span>9:00 - 19:00</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Суббота:</span>
+                                <span>10:00 - 17:00</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Воскресенье:</span>
+                                <span>Выходной</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-secondary/30 rounded-3xl p-8">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-6">Оставить заявку</h3>
+                    <form class="space-y-6" data-event="submit:handleBookingSubmit">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Ваше имя</label>
+                            <input type="text" id="name" name="name" required 
+                                   class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-warm focus:ring-1 focus:ring-warm focus:outline-none transition-colors"
+                                   placeholder="Введите ваше имя" />
+                        </div>
+                        
+                        <div>
+                            <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Телефон</label>
+                            <input type="tel" id="phone" name="phone" required 
+                                   class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-warm focus:ring-1 focus:ring-warm focus:outline-none transition-colors"
+                                   placeholder="+7 (999) 123-45-67" />
+                        </div>
+                        
+                        <div>
+                            <label for="service" class="block text-sm font-medium text-gray-700 mb-2">Желаемая услуга</label>
+                            <textarea id="service" name="service" rows="3" required
+                                      class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-warm focus:ring-1 focus:ring-warm focus:outline-none transition-colors resize-none"
+                                      placeholder="Опишите желаемую услугу, дизайн или уточните детали"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-warm text-white py-4 rounded-xl font-medium hover:bg-amber-600 transition-colors flex items-center justify-center space-x-2">
+                            <span>Отправить заявку</span>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                            </svg>
+                        </button>
+                    </form>
+                    
+                    <p class="text-sm text-gray-600 mt-4 text-center">
+                        Отвечу в течение 30 минут в рабочее время
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: Contacts -->
+
+    <!-- @COMPONENT: Footer [simple footer with copyright] -->
+    <footer class="bg-gray-50 py-8">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-gradient-to-br from-pink-200 to-amber-200 rounded-full flex items-center justify-center">
+                        <span class="text-gray-700 font-semibold text-sm">АП</span>
+                    </div>
+                    <span class="text-gray-600">Анна Петрова • Мастер маникюра</span>
+                </div>
+                <div class="text-gray-500 text-sm">
+                    © 2024 Все права защищены
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- @END_COMPONENT: Footer -->
+
+    <!-- @COMPONENT: BookingModal [modal form overlay] -->
+    <div id="bookingModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-semibold text-gray-800">Записаться на маникюр</h3>
+                <button class="text-gray-400 hover:text-gray-600 transition-colors" data-event="click:closeBookingModal">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <form class="space-y-6" data-event="submit:handleModalBookingSubmit">
+                <div>
+                    <label for="modal-name" class="block text-sm font-medium text-gray-700 mb-2">Ваше имя</label>
+                    <input type="text" id="modal-name" name="name" required 
+                           class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-warm focus:ring-1 focus:ring-warm focus:outline-none transition-colors"
+                           placeholder="Введите ваше имя" />
+                </div>
+                
+                <div>
+                    <label for="modal-phone" class="block text-sm font-medium text-gray-700 mb-2">Телефон</label>
+                    <input type="tel" id="modal-phone" name="phone" required 
+                           class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-warm focus:ring-1 focus:ring-warm focus:outline-none transition-colors"
+                           placeholder="+7 (999) 123-45-67" />
+                </div>
+                
+                <div>
+                    <label for="modal-service" class="block text-sm font-medium text-gray-700 mb-2">Желаемая услуга</label>
+                    <select id="modal-service" name="service" required
+                            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-warm focus:ring-1 focus:ring-warm focus:outline-none transition-colors">
+                        <option value="">Выберите услугу</option>
+                        <option value="classic">Классический маникюр</option>
+                        <option value="gel">Гель-лак</option>
+                        <option value="design">Nail-дизайн</option>
+                        <option value="pedicure">Педикюр</option>
+                        <option value="strengthening">Укрепление ногтей</option>
+                        <option value="spa">Spa-уход</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="modal-comment" class="block text-sm font-medium text-gray-700 mb-2">Комментарий (по желанию)</label>
+                    <textarea id="modal-comment" name="comment" rows="3"
+                              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-warm focus:ring-1 focus:ring-warm focus:outline-none transition-colors resize-none"
+                              placeholder="Дополнительные пожелания или уточнения"></textarea>
+                </div>
+                
+                <button type="submit" class="w-full bg-warm text-white py-4 rounded-xl font-medium hover:bg-amber-600 transition-colors">
+                    Отправить заявку
+                </button>
+            </form>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: BookingModal -->
+
+    <script>
+        (function() {
+            // TODO: Implement business logic, API calls, or state management
+            
+            // Modal functionality
+            const bookingModal = document.getElementById('bookingModal');
+            const openModalButtons = document.querySelectorAll('[data-event*="openBookingForm"]');
+            const closeModalButton = document.querySelector('[data-event*="closeBookingModal"]');
+            
+            openModalButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    bookingModal.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+            
+            if (closeModalButton) {
+                closeModalButton.addEventListener('click', () => {
+                    bookingModal.classList.add('hidden');
+                    document.body.style.overflow = 'auto';
+                });
+            }
+            
+            // Close modal on backdrop click
+            bookingModal.addEventListener('click', (e) => {
+                if (e.target === bookingModal) {
+                    bookingModal.classList.add('hidden');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+            
+            // Form submission handlers
+            const forms = document.querySelectorAll('form[data-event*="submit"]');
+            forms.forEach(form => {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    
+                    // TODO: Implement form validation
+                    // TODO: Send data to Telegram Bot API
+                    // TODO: Show success/error messages
+                    
+                    // Mock success behavior
+                    alert('Заявка отправлена! Я свяжусь с вами в ближайшее время.');
+                    
+                    // Close modal if it's the modal form
+                    if (form.closest('#bookingModal')) {
+                        bookingModal.classList.add('hidden');
+                        document.body.style.overflow = 'auto';
+                    }
+                    
+                    // Reset form
+                    form.reset();
+                });
+            });
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+            
+            // Phone number formatting
+            const phoneInputs = document.querySelectorAll('input[type="tel"]');
+            phoneInputs.forEach(input => {
+                input.addEventListener('input', (e) => {
+                    let value = e.target.value.replace(/\D/g, '');
+                    if (value.startsWith('7')) {
+                        value = value.substring(1);
+                    }
+                    if (value.length >= 10) {
+                        value = value.substring(0, 10);
+                        e.target.value = `+7 (${value.substring(0, 3)}) ${value.substring(3, 6)}-${value.substring(6, 8)}-${value.substring(8, 10)}`;
+                    } else {
+                        e.target.value = '+7 (' + value;
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
