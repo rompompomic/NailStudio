@@ -17,8 +17,12 @@ const UPLOADS_DIR = path.join(process.cwd(), "uploads");
 
 // Ensure data directories exist
 async function ensureDataDirs() {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  await fs.mkdir(UPLOADS_DIR, { recursive: true });
+  try {
+    await fs.mkdir(DATA_DIR, { recursive: true });
+    await fs.mkdir(UPLOADS_DIR, { recursive: true });
+  } catch (error) {
+    console.error('Error creating directories:', error);
+  }
 }
 
 // File paths
