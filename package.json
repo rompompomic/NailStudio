@@ -9,7 +9,7 @@
     "start": "cross-env NODE_ENV=production node dist/index.js",
     "check": "tsc",
     "predeploy": "npm run build",
-    "build:netlify": "cross-env NETLIFY=true vite build",
+    "build:netlify": "vite build",
     "build:github": "vite build",
     "predeploy": "npm run build:github",
     "deploy": "gh-pages -d dist"
