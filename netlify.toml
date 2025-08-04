@@ -9,3 +9,4 @@
 
 [build.environment]
   NETLIFY = "true"
+  NETLIFY_NEXT_PLUGIN_SKIP = "true"
