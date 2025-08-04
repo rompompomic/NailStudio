@@ -14,41 +14,41 @@ export interface IStorage {
   // Settings
   getSettings(): Promise<Settings>;
   updateSettings(settings: Partial<InsertSettings>): Promise<Settings>;
-  
+
   // Blocks
   getBlocks(): Promise<Block[]>;
   getBlock(id: string): Promise<Block | undefined>;
   createBlock(block: InsertBlock): Promise<Block>;
   updateBlock(id: string, block: Partial<InsertBlock>): Promise<Block>;
   deleteBlock(id: string): Promise<void>;
-  
+
   // Services
   getServices(): Promise<Service[]>;
   createService(service: InsertService): Promise<Service>;
   updateService(id: string, service: Partial<InsertService>): Promise<Service>;
   deleteService(id: string): Promise<void>;
-  
+
   // Reviews
   getReviews(): Promise<Review[]>;
   createReview(review: InsertReview): Promise<Review>;
   updateReview(id: string, review: Partial<InsertReview>): Promise<Review>;
   deleteReview(id: string): Promise<void>;
-  
+
   // Requests
   getRequests(): Promise<Request[]>;
   createRequest(request: InsertRequest): Promise<Request>;
-  
+
   // Subscribers
   getSubscribers(): Promise<Subscriber[]>;
   createSubscriber(subscriber: InsertSubscriber): Promise<Subscriber>;
   getSubscriberByChatId(chatId: string): Promise<Subscriber | undefined>;
   deleteSubscriber(id: string): Promise<void>;
-  
+
   // Images
   getImages(): Promise<Image[]>;
   createImage(image: InsertImage): Promise<Image>;
   deleteImage(id: string): Promise<void>;
-  
+
   // Auth
   validateAdminPassword(password: string): Promise<boolean>;
 }
@@ -310,14 +310,5 @@ export class MemStorage implements IStorage {
   }
 }
 
-// Choose storage implementation
-// FileStorage - stores data in JSON files (recommended for simplicity)
-// MemStorage - stores data in memory (data lost on restart)
-
+// Use file storage from separate file (data persists between restarts)
 import { FileStorage } from "./file-storage";
-
-// Use file storage (data persists between restarts)
-export const storage = new FileStorage();
-
-// Uncomment the line below to use in-memory storage
-// export const storage = new MemStorage();
